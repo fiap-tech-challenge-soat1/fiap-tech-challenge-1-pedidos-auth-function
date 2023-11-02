@@ -25,8 +25,7 @@ class AuthFunctionService {
                 Pair("id", cliente.id),
                 Pair("nome", cliente.nome),
                 Pair("email", cliente.email),
-                Pair("cpf", cliente.cpf),
-                Pair("teste", "123")
+                Pair("cpf", cliente.cpf)
             )
 
             val cpf = it.cpf.filter { c -> c.isDigit() }
