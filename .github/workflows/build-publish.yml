@@ -1,0 +1,46 @@
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+  
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'temurin'
+  
+      - name: Package
+        run: mvn package
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          project_id: ${{vars.PROJECT_ID}}
+          service_account_key: ${{secrets.SERVICE_ACCOUNT_KEY}}
+          export_default_credentials: true
+
+      - name: Deploy
+        uses: google-github-actions/deploy-cloud-functions@v1
+        with:
+          name: auth-function
+          entry_point: org.springframework.cloud.function.adapter.gcp.GcfJarLauncher
+          runtime: java17
+          source_dir: target/deploy
+          memory_mb: ${{vars.DEPLOY_MEMORY}}
+          region: ${{vars.DEPLOY_REGION}}
+          min_instances: ${{vars.DEPLOY_MIN_INSTANCES}}
+          max_instances: ${{vars.DEPLOY_MAX_INSTANCES}}
+          service_account_email: ${{vars.DEPLOY_SERVICE_ACCOUNT_EMAIL}}
+          vpc_connector: ${{vars.DEPLOY_VPC_CONNECTOR}}
+          secret_environment_variables: ${{vars.DEPLOY_SECRET_ENVIRONMENT_VARIABLES}}
