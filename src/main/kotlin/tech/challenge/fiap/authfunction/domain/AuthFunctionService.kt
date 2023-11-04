@@ -27,7 +27,8 @@ class AuthFunctionService {
 
             val customClaims = mapOf(
                 Pair("nome", cliente.nome),
-                Pair("cpf", cliente.cpf)
+                Pair("cpf", cliente.cpf),
+                Pair("email", cliente.email)
             )
 
             return@Function firebaseAuth.createCustomToken(cliente.cpf, customClaims).let { token ->
