@@ -30,8 +30,8 @@ class AuthFunctionService {
                 Pair("cpf", cliente.cpf)
             )
 
-            return@Function firebaseAuth.createCustomToken(cliente.cpf, customClaims).let {
-                buildTokenResponse(it)
+            return@Function firebaseAuth.createCustomToken(cliente.cpf, customClaims).let { token ->
+                buildTokenResponse(token)
             }
         }
     }
